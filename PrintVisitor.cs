@@ -19,8 +19,7 @@ namespace ASTBuilder
         }
 
         // Call this method to begin the tree printing process
-        // This is a new version that uses VisitChildren rather than
-        // building in the traversal logic
+        
         public void PrintTree(AbstractNode node, string prefix = "")
         {
             if (node == null) { 
@@ -44,17 +43,17 @@ namespace ASTBuilder
             };
         }
 
+        // This method is defined for a parameter of the parent class
+        // AbstractNode, so it will be invoked on a node if there is not
+        // a specialized method defined below.
         public void VisitNode(AbstractNode node)
         {
             Console.WriteLine("<" + node.ClassName() + ">");
         }
 
-        //public void VisitNode(Modifiers node)
-        //{
-        //    Console.Write("<" + node.ClassName() + ">: ");
-        //    // Add code here to print Modifier info
-        //}
-
+        // Here are three specialized VisitNode methods for terminals
+        // You will be adding more methods here for other nodes that hold
+        // information of interest beyond the class name.
         public void VisitNode(Identifier node)
         {
             Console.Write("<" + node.ClassName() + ">: ");

@@ -157,56 +157,6 @@ namespace ASTBuilder
         }
 
     }
-    public class PrimaryExpression : AbstractNode 
-    {
-        public PrimaryExpression(AbstractNode abstractNode)
-        {
-            adoptChildren(abstractNode);
-        }
-    }
-    public enum SpecialNameType { THIS, NULL }
-
-    public class SpecialName : AbstractNode
-    {
-        public SpecialNameType SpecialType { get; set; }
-        public SpecialName(SpecialNameType specialType)
-        {
-            SpecialType = specialType;
-        }
-
-    }
-
-    public class NotJustName : AbstractNode
-    {
-        public NotJustName(AbstractNode abstractNode)
-        {
-            adoptChildren(abstractNode);
-        }
-    }
-
-    public class ComplexPrimaryNoParenthesis : AbstractNode
-    {
-        public ComplexPrimaryNoParenthesis(AbstractNode abstractNode)
-        {
-            adoptChildren(abstractNode);
-        }
-    }
-
-    public class MethodReference : AbstractNode
-    {
-        public MethodReference(AbstractNode abstractNode)
-        {
-            adoptChildren(abstractNode);
-        }
-    }
-
-    public class ComplexPrimary : AbstractNode
-    {
-        public ComplexPrimary(AbstractNode abstractNode)
-        {
-            adoptChildren(abstractNode);
-        }
-    }
-    
+     
 }
 

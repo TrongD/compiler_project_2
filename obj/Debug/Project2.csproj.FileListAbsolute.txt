@@ -14,4 +14,3 @@ C:\Users\lebla\Documents\GitHub\Project-2\bin\Debug\TCCL-AST.exe
 C:\Users\lebla\Documents\GitHub\Project-2\bin\Debug\TCCL-AST.pdb
 C:\Users\lebla\Documents\GitHub\Project-2\obj\Debug\TCCL-AST.exe
 C:\Users\lebla\Documents\GitHub\Project-2\obj\Debug\TCCL-AST.pdb
-C:\Users\lebla\Documents\GitHub\Project-2\obj\Debug\Project2.csprojResolveAssemblyReference.cache

@@ -5,10 +5,10 @@
 //  See accompanying file GPLEXcopyright.rtf.
 //
 //  GPLEX Version:  1.2.2
-//  Machine:  RJL-SURFACE4
-//  DateTime: 4/29/2019 4:57:39 PM
-//  UserName: lebla
-//  GPLEX input file <TCCL.analyzer.lex - 4/28/2019 10:59:58 PM>
+//  Machine:  t-pc
+//  DateTime: 5/2/2019 5:17:52 PM
+//  UserName: t
+//  GPLEX input file <TCCL.analyzer.lex - 5/1/2019 12:48:17 PM>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: verbose, parser, stack, minimize

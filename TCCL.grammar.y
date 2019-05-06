@@ -137,13 +137,14 @@ Block                       :   LBRACE LocalItems RBRACE                        
 
 //LocalItems                  :   LocalItem                                           { $$ = $1; }              
 LocalItems                  :   LocalItem                                           { $$ = new LocalItems($1); } 
-                            |   LocalItems LocalItem                                { $$ = $1.adoptChildren($2); }
-//                            |   LocalItems LocalItem                                { $$ = new LocalItems($1, $2); }
+//                            |   LocalItems LocalItem                                { $$ = $1.adoptChildren($2); }
+                            |   LocalItems LocalItem                                { $$ = new LocalItems($1, $2); }
                             ;
                             
 //LocalItem                     :   LocalVariableDeclaration							{ $$ = new LocalItem($1); }       
 LocalItem                     :   LocalVariableDeclaration                          { $$ = $1; }
                               |   Statement                                         { $$ = new Statement($1);}
+//                                |   Statement                                         { $$ = new Statement($1);}
                               ;                                     
 
 LocalVariableDeclaration			:   TypeSpecifier LocalVariableNames SEMICOLON    { $$ = new LocalVariableDeclaration ($1, $2); }

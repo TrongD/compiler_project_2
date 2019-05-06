@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  t-pc
-// DateTime: 5/6/2019 2:36:28 PM
+// DateTime: 5/6/2019 2:45:22 PM
 // UserName: t
-// Input file <TCCL.grammar.y - 5/6/2019 2:36:13 PM>
+// Input file <TCCL.grammar.y - 5/6/2019 2:45:06 PM>
 
 // options: no-lines gplex
 
@@ -472,7 +472,7 @@ internal partial class TCCLParser: ShiftReduceParser<AbstractNode, LexLocation>
 { CurrentSemanticValue = new LocalItems(ValueStack[ValueStack.Depth-1]); }
         break;
       case 46: // LocalItems -> LocalItems, LocalItem
-{ CurrentSemanticValue = ValueStack[ValueStack.Depth-2].adoptChildren(ValueStack[ValueStack.Depth-1]); }
+{ CurrentSemanticValue = new LocalItems(ValueStack[ValueStack.Depth-2], ValueStack[ValueStack.Depth-1]); }
         break;
       case 47: // LocalItem -> LocalVariableDeclaration
 { CurrentSemanticValue = ValueStack[ValueStack.Depth-1]; }

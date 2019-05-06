@@ -143,8 +143,8 @@ LocalItems                  :   LocalItem                                       
                             
 //LocalItem                     :   LocalVariableDeclaration							{ $$ = new LocalItem($1); }       
 LocalItem                     :   LocalVariableDeclaration                          { $$ = $1; }
-                              |   Statement                                         { $$ = new Statement($1);}
-//                                |   Statement                                         { $$ = new Statement($1);}
+//                              |   Statement                                         { $$ = new Statement($1);}
+                                |   Statement                                         { $$ = $1 ;}
                               ;                                     
 
 LocalVariableDeclaration			:   TypeSpecifier LocalVariableNames SEMICOLON    { $$ = new LocalVariableDeclaration ($1, $2); }
@@ -157,7 +157,7 @@ LocalVariableNames          :   Identifier
 
                             
 Statement                   :   EmptyStatement                                              
-                            |   ExpressionStatement SEMICOLON                              
+                            |   ExpressionStatement SEMICOLON                      { $$ = new Statement($1);}        
                             |   SelectionStatement                                         
                             |   IterationStatement                                          
                             |   ReturnStatement                                            
@@ -167,7 +167,7 @@ Statement                   :   EmptyStatement
 EmptyStatement              :   SEMICOLON                                                   
                             ;
 
-ExpressionStatement         :   Expression                                                
+ExpressionStatement         :   Expression                                          {$$ = $1; }          
                             ;
 
 /*
@@ -215,7 +215,7 @@ Expression                  :   QualifiedName EQUALS Expression     { $$ = new E
                             |   PrimaryExpression               { $$ = $1; }
                             ;
 
-ArithmeticUnaryOperator     :   PLUSOP
+ArithmeticUnaryOperator     :   PLUSOP                                          
                             |   MINUSOP
                             ;
                             
@@ -240,6 +240,7 @@ ComplexPrimaryNoParenthesis :   LITERAL                         { $$ = $1;}
 FieldAccess                 :   NotJustName PERIOD Identifier   { $$ = new Identifier("Not Implemented: FieldAccess");}   
                             ;       
 
+//MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN     { $$ =  new Identifier("Not Implemented: MethodCall"); }
 MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN     { $$ =  new Identifier("Not Implemented: MethodCall"); }
                             |   MethodReference LPAREN RPAREN                   { $$ = new Identifier("Not Implemented: MethodCall");}
                             ;

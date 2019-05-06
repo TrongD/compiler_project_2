@@ -217,6 +217,22 @@ namespace ASTBuilder
         }
 
     }
-     
+
+    public class MethodCall :AbstractNode
+    {
+        public MethodCall (AbstractNode methodReference)
+        {
+            adoptChildren(methodReference);
+        }
+    }
+
+
+    //public class Statement : AbstractNode
+    //{
+    //    public Statement(AbstractNode abstractNode)
+    //    {
+    //        adoptChildren(abstractNode);
+    //    }
+    //}
 }
 

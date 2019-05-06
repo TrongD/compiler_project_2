@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  t-pc
-// DateTime: 5/6/2019 2:45:22 PM
+// DateTime: 5/6/2019 3:13:34 PM
 // UserName: t
-// Input file <TCCL.grammar.y - 5/6/2019 2:45:06 PM>
+// Input file <TCCL.grammar.y - 5/6/2019 3:07:12 PM>
 
 // options: no-lines gplex
 
@@ -478,13 +478,19 @@ internal partial class TCCLParser: ShiftReduceParser<AbstractNode, LexLocation>
 { CurrentSemanticValue = ValueStack[ValueStack.Depth-1]; }
         break;
       case 48: // LocalItem -> Statement
-{ CurrentSemanticValue = new Statement(ValueStack[ValueStack.Depth-1]);}
+{ CurrentSemanticValue = ValueStack[ValueStack.Depth-1] ;}
         break;
       case 49: // LocalVariableDeclaration -> TypeSpecifier, LocalVariableNames, SEMICOLON
 { CurrentSemanticValue = new LocalVariableDeclaration (ValueStack[ValueStack.Depth-3], ValueStack[ValueStack.Depth-2]); }
         break;
       case 52: // LocalVariableNames -> LocalVariableNames, COMMA, Identifier
 { CurrentSemanticValue = new LocalVariableNames(ValueStack[ValueStack.Depth-3], ValueStack[ValueStack.Depth-1]); }
+        break;
+      case 54: // Statement -> ExpressionStatement, SEMICOLON
+{ CurrentSemanticValue = new Statement(ValueStack[ValueStack.Depth-2]);}
+        break;
+      case 60: // ExpressionStatement -> Expression
+{CurrentSemanticValue = ValueStack[ValueStack.Depth-1]; }
         break;
       case 67: // Expression -> QualifiedName, EQUALS, Expression
 { CurrentSemanticValue = new Expression(ValueStack[ValueStack.Depth-3], ExprKind.EQUALS, ValueStack[ValueStack.Depth-1]); }

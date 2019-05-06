@@ -48,6 +48,7 @@ namespace ASTBuilder
         // a specialized method defined below.
         public void VisitNode(AbstractNode node)
         {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("<" + node.ClassName() + ">");
         }
 
@@ -91,6 +92,14 @@ namespace ASTBuilder
             Console.Write("<" + node.ClassName() + ">: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(node.ModifierTokens[0]);
+            Console.ResetColor();
+        }
+
+        public void VisitNode(Expression node)
+        {
+            Console.Write("<" + node.ClassName() + ">: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(node.exprKind);
             Console.ResetColor();
         }
 

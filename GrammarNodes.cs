@@ -48,6 +48,7 @@ namespace ASTBuilder
             Name = s;
         }
     }
+
     public class INT_CONST : AbstractNode
     {
         public virtual string IntVal { get; protected set; }
@@ -95,14 +96,73 @@ namespace ASTBuilder
         }
 
     }
-    
-     public class MethodBody : AbstractNode
+
+    public class MethodBody : AbstractNode
     {
         public MethodBody(AbstractNode abstractNode)
         {
             adoptChildren(abstractNode);
         }
     }
+
+    public class Block : AbstractNode
+    {
+        public Block(AbstractNode abstractNode)
+        {
+            adoptChildren(abstractNode);
+        }
+    }
+
+    public class LocalItems : AbstractNode
+    {
+
+        public LocalItems(AbstractNode abstractNode)
+        {
+            adoptChildren(abstractNode);
+        }
+        public LocalItems(AbstractNode localItems, AbstractNode localItem)
+        {
+            localItems.adoptChildren(localItem);
+            //adoptChildren(localItems);
+            adoptChildren(localItem);
+
+        }
+    }
+
+    public class LocalItem : AbstractNode
+    {
+        public LocalItem(AbstractNode abstractNode)
+        {
+            adoptChildren(abstractNode);
+        }
+    }
+
+    public class LocalVariableDeclaration : AbstractNode
+    {
+        public LocalVariableDeclaration(AbstractNode typeSpecifier, AbstractNode localVariableNames)
+        {
+            adoptChildren(typeSpecifier);
+            adoptChildren(localVariableNames);
+            //adoptChildren(sEMICOLON);
+        }
+    }
+
+    public class LocalVariableNames : AbstractNode
+    {
+        public LocalVariableNames(AbstractNode localVariableNames, AbstractNode identifier)
+        {
+            adoptChildren(localVariableNames);
+            adoptChildren(identifier);
+        }
+    }
+
+    public class Statement: AbstractNode
+    {
+        public Statement(AbstractNode abstractNode){
+            adoptChildren(abstractNode);
+        }
+    }
+
 
     public class Parameter : AbstractNode
     {

@@ -69,6 +69,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="copyof_Y.txt" />
   </ItemGroup>
   <ItemGroup Label="TCCLFiles">
     <Compile Include="TCCL.Parser.cs">
@@ -91,7 +92,7 @@
     <Compile Include="$(TCCLParser).Parser.Generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>$(TCCLParser).grammar.y</DependentUpon>
+      <DependentUpon>TCCL.grammar.y</DependentUpon>
     </Compile>
     <None Include="TCCL.parser" />
   </ItemGroup>

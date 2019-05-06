@@ -34,14 +34,14 @@
 
 %%
 
-CompilationUnit     :   ClassDeclaration                    {$$ = new Identifier("Not Implemented: ClassDeclaration");}
-                    |	MethodDeclarations                  {$$ = new CompilationUnit($1);} 
-					     ;
+CompilationUnit             :   ClassDeclaration                    {$$ = new Identifier("Not Implemented: ClassDeclaration");}
+                            |	MethodDeclarations                  {$$ = new CompilationUnit($1);} 
+					        ;
 
 
-MethodDeclarations	:	MethodDeclaration					 { $$ = $1;  }
-					      |	MethodDeclarations MethodDeclaration { $1.makeSibling($2); $$ = $1;}
-					      ;
+MethodDeclarations	        :	MethodDeclaration					 { $$ = $1;  }
+					        |	MethodDeclarations MethodDeclaration { $1.makeSibling($2); $$ = $1;}
+					        ;
 
 MethodDeclaration           :   Modifiers TypeSpecifier MethodSignature MethodBody          {$$ = new MethodDeclaration($1, $2, $3, $4); }
                             ;
@@ -68,7 +68,7 @@ ClassDeclaration    :   Modifiers CLASS Identifier ClassBody
 Modifiers           :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC);}
                     |   PRIVATE                             { $$ = new Modifiers(ModifierType.PRIVATE);}
                     |   STATIC                              { $$ = new Modifiers(ModifierType.STATIC);}
-                    |   Modifiers PUBLIC                    { $$ = new Identifier("Not Implemented: Modifier List");}
+                    /*|   Modifiers PUBLIC                    { $$ = new Identifier("Not Implemented: Modifier List");}*/
                     |   Modifiers PRIVATE                   { $$ = new Identifier("Not Implemented: Modifier List");}
                     |   Modifiers STATIC                    { $$ = new Identifier("Not Implemented: Modifier List");}
                     ;
@@ -130,26 +130,28 @@ StaticInitializer           :   STATIC Block                                    
  * These can't be reorganized, because the order matters.
  * For example:  int i;  i = 5;  int j = i;
  */
-
-Block                       :   LBRACE LocalItems RBRACE                           { $$ =  new Identifier("Not Implemented: Block"); }
-                            |   LBRACE RBRACE                                      { $$ =  new Identifier("Not Implemented: Block"); }
-                            |   
+Block                       :   LBRACE LocalItems RBRACE                            { $$ = new Block($2); }
+                            |   LBRACE RBRACE                                       { $$ =  new Identifier("Not Implemented: Block"); }
                             ;
+                           
 
-LocalItems			        :   LocalItem						                                 
-                            |   LocalItems LocalItem
-                            ;    
+//LocalItems                  :   LocalItem                                           { $$ = $1; }              
+LocalItems                  :   LocalItem                                           { $$ = new LocalItems($1); } 
+                            |   LocalItems LocalItem                                { $$ = $1.adoptChildren($2); }
+//                            |   LocalItems LocalItem                                { $$ = new LocalItems($1, $2); }
+                            ;
+                            
+//LocalItem                     :   LocalVariableDeclaration							{ $$ = new LocalItem($1); }       
+LocalItem                     :   LocalVariableDeclaration                          { $$ = $1; }
+                              |   Statement                                         { $$ = new Statement($1);}
+                              ;                                     
 
-LocalItem                     :   LocalVariableDeclaration							       
-                              |   Statement                                         
-                              ;
-
-LocalVariableDeclaration			:   TypeSpecifier LocalVariableNames SEMICOLON    
+LocalVariableDeclaration			:   TypeSpecifier LocalVariableNames SEMICOLON    { $$ = new LocalVariableDeclaration ($1, $2); }
                                     |   StructDeclaration                                  
                                     ;
 
 LocalVariableNames          :   Identifier                                
-                            |   LocalVariableNames COMMA Identifier         
+                            |   LocalVariableNames COMMA Identifier                 { $$ = new LocalVariableNames($1, $3); }
                             ;
 
                             
@@ -192,21 +194,21 @@ ArgumentList                :   Expression
 
 // TODO
 Expression                  :   QualifiedName EQUALS Expression     { $$ = new Expression($1, ExprKind.EQUALS, $3); }
-   /* short-circuit OR  */  |   Expression OP_LOR Expression   
-   /* short-circuit AND */  |   Expression OP_LAND Expression   
-                            |   Expression PIPE Expression
-                            |   Expression HAT Expression
-                            |   Expression AND Expression
-                            |   Expression OP_EQ Expression
-                            |   Expression OP_NE Expression
-                            |   Expression OP_GT Expression
-                            |   Expression OP_LT Expression
-                            |   Expression OP_LE Expression
-                            |   Expression OP_GE Expression
+   /* short-circuit OR  */  |   Expression OP_LOR Expression        { $$ = new Expression($1, ExprKind.OP_LOR, $3); }
+   /* short-circuit AND */  |   Expression OP_LAND Expression       { $$ = new Expression($1, ExprKind.OP_LAND, $3); }
+                            |   Expression PIPE Expression          { $$ = new Expression($1, ExprKind.PIPE, $3); }
+                            |   Expression HAT Expression           { $$ = new Expression($1, ExprKind.HAT, $3); }
+                            |   Expression AND Expression           { $$ = new Expression($1, ExprKind.AND, $3); }
+                            |   Expression OP_EQ Expression         { $$ = new Expression($1, ExprKind.OP_EQ, $3); }
+                            |   Expression OP_NE Expression         { $$ = new Expression($1, ExprKind.OP_NE, $3); }
+                            |   Expression OP_GT Expression         { $$ = new Expression($1, ExprKind.OP_GT, $3); }
+                            |   Expression OP_LT Expression         { $$ = new Expression($1, ExprKind.OP_LT, $3); }
+                            |   Expression OP_LE Expression         { $$ = new Expression($1, ExprKind.OP_LE, $3); }
+                            |   Expression OP_GE Expression         { $$ = new Expression($1, ExprKind.OP_GE, $3); }    
                             |   Expression PLUSOP Expression		{ $$ = new Expression($1, ExprKind.PLUSOP, $3); }
                             |   Expression MINUSOP Expression		{ $$ = new Expression($1, ExprKind.MINUSOP, $3); }
-                            |   Expression ASTERISK Expression
-                            |   Expression RSLASH Expression
+                            |   Expression ASTERISK Expression      { $$ = new Expression($1, ExprKind.ASTERISK, $3); }
+                            |   Expression RSLASH Expression        
                             |   Expression PERCENT Expression   /* remainder */
                             |   ArithmeticUnaryOperator Expression  %prec UNARY
                             |   PrimaryExpression               { $$ = $1; }

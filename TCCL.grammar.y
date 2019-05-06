@@ -133,9 +133,10 @@ StaticInitializer           :   STATIC Block                                    
 
 Block                       :   LBRACE LocalItems RBRACE                           { $$ =  new Identifier("Not Implemented: Block"); }
                             |   LBRACE RBRACE                                      { $$ =  new Identifier("Not Implemented: Block"); }
+                            |   
                             ;
 
-LocalItems			          :   LocalItem						                                 
+LocalItems			        :   LocalItem						                                 
                             |   LocalItems LocalItem
                             ;    
 

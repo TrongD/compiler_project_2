@@ -58,7 +58,7 @@ namespace ASTBuilder
         {
             Console.Write("<" + node.ClassName() + ">: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(node.Name);
+            Console.WriteLine(node.Name+"+++");
             Console.ResetColor();
         }
 
@@ -75,6 +75,22 @@ namespace ASTBuilder
             Console.Write("<" + node.ClassName() + ">: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(node.StrVal);
+            Console.ResetColor();
+        }
+
+        public void VisitNode(PrimitiveType node)
+        {
+            Console.Write("<" + node.ClassName() + ">: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(node.Type);
+            Console.ResetColor();
+        }
+
+        public void VisitNode(Modifiers node)
+        {
+            Console.Write("<" + node.ClassName() + ">: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(node.ModifierTokens[0]);
             Console.ResetColor();
         }
 

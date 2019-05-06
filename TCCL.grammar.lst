@@ -1,11 +1,11 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <TCCL.grammar.y - 4/29/2019 9:25:56 AM>
+//  GPPG error listing for yacc source file <TCCL.grammar.y - 5/5/2019 8:50:29 PM>
 // ==========================================================================
 //  Version:  1.5.2
-//  Machine:  RJL-SURFACE4
-//  DateTime: 4/29/2019 9:26:03 AM
-//  UserName: lebla
+//  Machine:  t-pc
+//  DateTime: 5/5/2019 8:50:55 PM
+//  UserName: t
 // ==========================================================================
 
 
@@ -16,11 +16,6 @@
 %tokentype Token
 %YYSTYPE AbstractNode
 
-%option verbose
-//^^^^^^^^^^^^^
-// Error: Unknown %keyword in this context
-// Error: Syntax error, unexpected ident
-// ---------------------------------------
 
 %start CompilationUnit
 
@@ -49,6 +44,12 @@
 %left  UNARY 
 
 %%
+// Error: There are 1 non-terminating NonTerminal Symbols
+   //  {WRITELINE}
+// Warning: Terminating WRITELINE fixes the following size-1 NonTerminal set
+   // {WRITELINE}
+// Error: NonTerminal symbol "WRITELINE" has no productions
+// -------------------------------------------------------------------------
 
 CompilationUnit     :   ClassDeclaration                    {$$ = new Identifier("Not Implemented: ClassDeclaration");}
                     |	MethodDeclarations                  {$$ = new CompilationUnit($1);} 
@@ -67,7 +68,7 @@ MethodSignature             :   Identifier LPAREN ParameterList RPAREN          
                             ;
 
 ParameterList               :   Parameter                                                   { $$ = new ParameterList($1); }
-                            |   ParameterList COMMA Parameter                               { $1.adoptChildren($2); $$ = $1;}  
+                            |   ParameterList COMMA Parameter                               { $1.adoptChildren($3); $$ = $1;}  
                             ;
 
 Parameter                   :   TypeSpecifier Identifier                                    { $$ = new Parameter($1, $2); }
@@ -78,7 +79,7 @@ MethodBody                  :   Block                                           
 
 
 
-ClassDeclaration    :   Modifiers CLASS Identifier ClassBody {$$ = new ClassDeclaration($1, $3, $4);}
+ClassDeclaration    :   Modifiers CLASS Identifier ClassBody 
                     ;
 
 Modifiers           :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC);}
@@ -147,33 +148,35 @@ StaticInitializer           :   STATIC Block                                    
  * For example:  int i;  i = 5;  int j = i;
  */
 
-Block                       :   LBRACE LocalItems RBRACE                                   { $$ =  new Identifier("Not Implemented: Block"); }
-                            |   LBRACE RBRACE                                              { $$ =  new Identifier("Not Implemented: Block"); }
+Block                       :   LBRACE LocalItems RBRACE                           { $$ =  new Identifier("Not Implemented: Block"); }
+                            |   LBRACE RBRACE                                      { $$ =  new Identifier("Not Implemented: Block"); }
+                            |   Identifier                                          { $$ =  new Identifier("Not Implemented: Block"); }
+                            |   MethodCall                                          { $$ = new Identifier("Not Implemented: MethodCall");}
                             ;
 
 LocalItems			          :   LocalItem						                                 
                             |   LocalItems LocalItem
                             ;    
 
-LocalItem                     :   LocalVariableDeclaration							        
-                              |   Statement                                           
+LocalItem                     :   LocalVariableDeclaration							       
+                              |   Statement                                         
                               ;
 
-LocalVariableDeclaration		:   TypeSpecifier LocalVariableNames SEMICOLON   
-                              |   StructDeclaration                                  
-                              ;
+LocalVariableDeclaration			:   TypeSpecifier LocalVariableNames SEMICOLON    
+                                    |   StructDeclaration                                  
+                                    ;
 
-LocalVariableNames          :   Identifier                                 
+LocalVariableNames          :   Identifier                                
                             |   LocalVariableNames COMMA Identifier         
                             ;
 
                             
 Statement                   :   EmptyStatement                                              
-                            |   ExpressionStatement SEMICOLON                             
-                            |   SelectionStatement                                        
-                            |   IterationStatement                                         
+                            |   ExpressionStatement SEMICOLON                              
+                            |   SelectionStatement                                         
+                            |   IterationStatement                                          
                             |   ReturnStatement                                            
-                            |   Block                                                      
+                            |   Block                                                    
                             ;
 
 EmptyStatement              :   SEMICOLON                                                   
@@ -206,7 +209,7 @@ ArgumentList                :   Expression
 
 
 // TODO
-Expression                  :   QualifiedName EQUALS Expression     { $$ = new Expression($1, ExprType.EQUALS, $3); }
+Expression                  :   QualifiedName EQUALS Expression     { $$ = new Expression($1, ExprKind.EQUALS, $3); }
    /* short-circuit OR  */  |   Expression OP_LOR Expression   
    /* short-circuit AND */  |   Expression OP_LAND Expression   
                             |   Expression PIPE Expression
@@ -218,8 +221,8 @@ Expression                  :   QualifiedName EQUALS Expression     { $$ = new E
                             |   Expression OP_LT Expression
                             |   Expression OP_LE Expression
                             |   Expression OP_GE Expression
-                            |   Expression PLUSOP Expression		{ $$ = new Expression($1, ExprType.PLUSOP, $3); }
-                            |   Expression MINUSOP Expression		{ $$ = new Expression($1, ExprType.MINUSOP, $3); }
+                            |   Expression PLUSOP Expression		{ $$ = new Expression($1, ExprKind.PLUSOP, $3); }
+                            |   Expression MINUSOP Expression		{ $$ = new Expression($1, ExprKind.MINUSOP, $3); }
                             |   Expression ASTERISK Expression
                             |   Expression RSLASH Expression
                             |   Expression PERCENT Expression   /* remainder */
@@ -249,30 +252,30 @@ ComplexPrimaryNoParenthesis :   LITERAL                         { $$ = $1;}
                             |   MethodCall                      { $$ = $1;}    
                             ;
 
-FieldAccess                 :   NotJustName PERIOD Identifier   { $$ = new Identifier("Not Implemented: FieldRef");}   
+FieldAccess                 :   NotJustName PERIOD Identifier   { $$ = new Identifier("Not Implemented: FieldAccess");}   
                             ;       
 
-MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN
-                                                                
-                            |   MethodReference LPAREN RPAREN   { $$ = new Identifier("Not Implemented: MethodRef()");}
+MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN     { $$ =  new Identifier("Not Implemented: MethodCall"); }
+                            |   MethodReference LPAREN RPAREN                   { $$ = new Identifier("Not Implemented: MethodCall");}
+                            |   WRITELINE                       { $$ = $1;}
                             ;
 
 MethodReference             :   ComplexPrimaryNoParenthesis     
                             |   QualifiedName                   
-                            |   SpecialName                     
+                            |   SpecialName                    
                             ;
 
-QualifiedName               :   Identifier                                     
-                            |   QualifiedName PERIOD Identifier                             
+QualifiedName               :   Identifier                        { $$ = $1; }                         
+                            |   QualifiedName PERIOD Identifier                            
                             ;
 SpecialName                 :   THIS                            
                             |   NULL                            
                             ;
 
-Identifier                  :   IDENTIFIER                      { $$ = $1; }   // Semantic value povided by scanner
+Identifier                  :   IDENTIFIER                      { $$ = $1; }
                             ;
 
-Number                      :   INT_NUMBER                      { $$ = $1; }   // Semantic value povided by scanner
+Number                      :   INT_NUMBER                      { $$ = $1; }
                             ;
 
 %%

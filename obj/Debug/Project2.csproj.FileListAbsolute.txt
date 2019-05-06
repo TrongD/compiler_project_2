@@ -21,3 +21,10 @@ C:/Users/lebla/Documents/GitHub/Project-2/obj/Debug/TCCL-AST.pdb
 /home/t/gitHub_Local_Repo/Compiler/Project_2/obj/Debug/Project2.csproj.CoreCompileInputs.cache
 /home/t/gitHub_Local_Repo/Compiler/Project_2/obj/Debug/TCCL-AST.exe
 /home/t/gitHub_Local_Repo/Compiler/Project_2/obj/Debug/TCCL-AST.pdb
+/home/t/workingdir/compiler/project_2/bin/Debug/TCCL-AST.exe.config
+/home/t/workingdir/compiler/project_2/bin/Debug/TCCL-AST.exe
+/home/t/workingdir/compiler/project_2/bin/Debug/TCCL-AST.pdb
+/home/t/workingdir/compiler/project_2/obj/Debug/Project2.csprojAssemblyReference.cache
+/home/t/workingdir/compiler/project_2/obj/Debug/Project2.csproj.CoreCompileInputs.cache
+/home/t/workingdir/compiler/project_2/obj/Debug/TCCL-AST.exe
+/home/t/workingdir/compiler/project_2/obj/Debug/TCCL-AST.pdb

@@ -64,10 +64,10 @@ MethodBody                  :   Block                                           
 
 
 //ClassDeclaration    :   Modifiers CLASS Identifier ClassBody                    {$$ = new ClassDeclaration($1, $3, $4);}
-ClassDeclaration    :   Modifiers CLASS Identifier ClassBody                    
+ClassDeclaration    :   Modifiers CLASS Identifier ClassBody                    {$$ = $1.makeSibling($3); $$ = $1.makeSibling($4);}
                     ;
 
-Modifiers           :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC);}
+Modifiers           :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC); }
 //Modifiers           :   PUBLIC                              { $$ = $1;}
                     |   PRIVATE                             { $$ = new Modifiers(ModifierType.PRIVATE);}
                     |   STATIC                              { $$ = new Modifiers(ModifierType.STATIC);}
@@ -84,22 +84,23 @@ Modifiers           :   PUBLIC                              { $$ = new Modifiers
 //                    |   Modifiers STATIC                     { $$ = new Modifiers($1, ModifierType.STATIC);}
                     ;
 
-ClassBody           :   LBRACE FieldDeclarations RBRACE         
+ClassBody           :   LBRACE FieldDeclarations RBRACE         {$$= new ClassBody($2);}
                     |   LBRACE RBRACE                       
                     ;
-
-FieldDeclarations   :   FieldDeclaration                    
-                    |   FieldDeclarations FieldDeclaration  
+                                                               
+FieldDeclarations   :   FieldDeclaration                             {$$ = $1;}       
+                    |   FieldDeclarations FieldDeclaration          {$$ = $1.makeSibling($2); $$ = $1;}
                     ;
 
 FieldDeclaration    :   FieldVariableDeclaration SEMICOLON  
                     |   MethodDeclaration                   
-                    |   ConstructorDeclaration                     
+                    |   ConstructorDeclaration                    
                     |   StaticInitializer                   
                     |   StructDeclaration                   
                     ;
 
-StructDeclaration   :   Modifiers STRUCT Identifier ClassBody   { $$ = new Identifier("Not Implemented: StructDeclaration");}
+//StructDeclaration   :   Modifiers STRUCT Identifier ClassBody   { $$ = new Identifier("Not Implemented: StructDeclaration");}
+StructDeclaration   :   Modifiers STRUCT Identifier ClassBody   { $$ = new StructDeclaration($1,$3,$4);}
                     ;
 
 
@@ -123,15 +124,16 @@ PrimitiveType               :   BOOLEAN                                         
                             |   VOID                                                        { $$ = new PrimitiveType(EnumPrimitiveType.VOID); }
                             ;
 
-FieldVariableDeclarators    :   FieldVariableDeclaratorName                                 {}
-                            |   FieldVariableDeclarators COMMA FieldVariableDeclaratorName  {}
+FieldVariableDeclarators    :   FieldVariableDeclaratorName                                 {$$ = $1;}
+                            |   FieldVariableDeclarators COMMA FieldVariableDeclaratorName  { $$= $1.makeSibling($3); $$=$1;}
                             ;
 
 
 FieldVariableDeclaratorName :   Identifier                                                  {$$ = $1;}
                             ;
 
-ConstructorDeclaration      :   Modifiers MethodSignature Block                             {}
+//ConstructorDeclaration      :   Modifiers MethodSignature Block                             {$$= $1.makeSibling($2); $$= $1.makeSibling($3);}
+ConstructorDeclaration      :   Modifiers MethodSignature Block                             {$$= new ConstructorDeclaration($1,$2,$3);}
                             ;
 
 StaticInitializer           :   STATIC Block                                                {}
@@ -141,7 +143,8 @@ StaticInitializer           :   STATIC Block                                    
  * These can't be reorganized, because the order matters.
  * For example:  int i;  i = 5;  int j = i;
  */
-Block                       :   LBRACE LocalItems RBRACE                            { $$ = new Block($2); }
+//Block                       :   LBRACE LocalItems RBRACE                            { $$ = new Block($2); }
+Block                       :   LBRACE LocalItems RBRACE                            { $$ = $2; }
                             |   LBRACE RBRACE                                       { $$ =  new Identifier("Not Implemented: Block"); }
                             ;
                            

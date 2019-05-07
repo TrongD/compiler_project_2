@@ -1,0 +1,7 @@
+public struct Book
+{
+    public decimal price;
+    public string title;
+    public string author;
+}
+ 

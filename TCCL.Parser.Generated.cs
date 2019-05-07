@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  t-pc
-// DateTime: 5/6/2019 8:07:11 PM
+// DateTime: 5/7/2019 12:29:47 AM
 // UserName: t
-// Input file <TCCL.grammar.y - 5/6/2019 8:05:38 PM>
+// Input file <TCCL.grammar.y - 5/7/2019 12:29:33 AM>
 
 // options: no-lines gplex
 
@@ -409,8 +409,11 @@ internal partial class TCCLParser: ShiftReduceParser<AbstractNode, LexLocation>
       case 12: // MethodBody -> Block
 { CurrentSemanticValue = new MethodBody(ValueStack[ValueStack.Depth-1]); }
         break;
+      case 13: // ClassDeclaration -> Modifiers, CLASS, Identifier, ClassBody
+{CurrentSemanticValue = ValueStack[ValueStack.Depth-4].makeSibling(ValueStack[ValueStack.Depth-2]); CurrentSemanticValue = ValueStack[ValueStack.Depth-4].makeSibling(ValueStack[ValueStack.Depth-1]);}
+        break;
       case 14: // Modifiers -> PUBLIC
-{ CurrentSemanticValue = new Modifiers(ModifierType.PUBLIC);}
+{ CurrentSemanticValue = new Modifiers(ModifierType.PUBLIC); }
         break;
       case 15: // Modifiers -> PRIVATE
 { CurrentSemanticValue = new Modifiers(ModifierType.PRIVATE);}
@@ -427,8 +430,17 @@ internal partial class TCCLParser: ShiftReduceParser<AbstractNode, LexLocation>
       case 19: // Modifiers -> Modifiers, STATIC
 {CurrentSemanticValue = ValueStack[ValueStack.Depth-2].makeSibling(new Modifiers(ModifierType.STATIC)); CurrentSemanticValue = ValueStack[ValueStack.Depth-2];}
         break;
+      case 20: // ClassBody -> LBRACE, FieldDeclarations, RBRACE
+{CurrentSemanticValue= new ClassBody(ValueStack[ValueStack.Depth-2]);}
+        break;
+      case 22: // FieldDeclarations -> FieldDeclaration
+{CurrentSemanticValue = ValueStack[ValueStack.Depth-1];}
+        break;
+      case 23: // FieldDeclarations -> FieldDeclarations, FieldDeclaration
+{CurrentSemanticValue = ValueStack[ValueStack.Depth-2].makeSibling(ValueStack[ValueStack.Depth-1]); CurrentSemanticValue = ValueStack[ValueStack.Depth-2];}
+        break;
       case 29: // StructDeclaration -> Modifiers, STRUCT, Identifier, ClassBody
-{ CurrentSemanticValue = new Identifier("Not Implemented: StructDeclaration");}
+{ CurrentSemanticValue = new StructDeclaration(ValueStack[ValueStack.Depth-4],ValueStack[ValueStack.Depth-2],ValueStack[ValueStack.Depth-1]);}
         break;
       case 30: // FieldVariableDeclaration -> Modifiers, TypeSpecifier, FieldVariableDeclarators
 {CurrentSemanticValue = new FieldVariableDeclaration(ValueStack[ValueStack.Depth-3], ValueStack[ValueStack.Depth-2], ValueStack[ValueStack.Depth-1]); }
@@ -452,23 +464,23 @@ internal partial class TCCLParser: ShiftReduceParser<AbstractNode, LexLocation>
 { CurrentSemanticValue = new PrimitiveType(EnumPrimitiveType.VOID); }
         break;
       case 39: // FieldVariableDeclarators -> FieldVariableDeclaratorName
-{}
+{CurrentSemanticValue = ValueStack[ValueStack.Depth-1];}
         break;
       case 40: // FieldVariableDeclarators -> FieldVariableDeclarators, COMMA, 
                //                             FieldVariableDeclaratorName
-{}
+{ CurrentSemanticValue= ValueStack[ValueStack.Depth-3].makeSibling(ValueStack[ValueStack.Depth-1]); CurrentSemanticValue=ValueStack[ValueStack.Depth-3];}
         break;
       case 41: // FieldVariableDeclaratorName -> Identifier
 {CurrentSemanticValue = ValueStack[ValueStack.Depth-1];}
         break;
       case 42: // ConstructorDeclaration -> Modifiers, MethodSignature, Block
-{}
+{CurrentSemanticValue= new ConstructorDeclaration(ValueStack[ValueStack.Depth-3],ValueStack[ValueStack.Depth-2],ValueStack[ValueStack.Depth-1]);}
         break;
       case 43: // StaticInitializer -> STATIC, Block
 {}
         break;
       case 44: // Block -> LBRACE, LocalItems, RBRACE
-{ CurrentSemanticValue = new Block(ValueStack[ValueStack.Depth-2]); }
+{ CurrentSemanticValue = ValueStack[ValueStack.Depth-2]; }
         break;
       case 45: // Block -> LBRACE, RBRACE
 { CurrentSemanticValue =  new Identifier("Not Implemented: Block"); }

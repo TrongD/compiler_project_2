@@ -257,12 +257,20 @@ namespace ASTBuilder
             adoptChildren(classDeclaration);
         }
 
-        //public ClassDeclaration (AbstractNode classDeclaration, AbstractNode identifier, AbstractNode classBody)
-        //{
-        //    adoptChildren(classDeclaration);
-        //    adoptChildren(identifier);
-        //    adoptChildren(classBody);
-        //}
+        public ClassDeclaration (AbstractNode classDeclaration, AbstractNode identifier, AbstractNode classBody)
+        {
+            adoptChildren(classDeclaration);
+            adoptChildren(identifier);
+            adoptChildren(classBody);
+        }
+    }
+
+    public class ClassBody : AbstractNode
+    {
+        public ClassBody (AbstractNode fielddeclarations)
+        {
+            adoptChildren(fielddeclarations);
+        }
     }
 
     public class FieldVariableDeclaration : AbstractNode
@@ -272,6 +280,26 @@ namespace ASTBuilder
             adoptChildren(modifiers);
             adoptChildren(typeSpecifier);
             adoptChildren(fieldVariableDeclarators);
+        }
+    }
+
+    public class ConstructorDeclaration : AbstractNode
+    {
+        public ConstructorDeclaration (AbstractNode modifiers, AbstractNode methodSignature, AbstractNode block)
+        {
+            adoptChildren(modifiers);
+            adoptChildren(methodSignature);
+            adoptChildren(block);
+        }
+    }
+
+    public class StructDeclaration : AbstractNode
+    {
+        public StructDeclaration (AbstractNode modifiers, AbstractNode identifier, AbstractNode classBody)
+        {
+            adoptChildren(modifiers);
+            adoptChildren(identifier);
+            adoptChildren(classBody);
         }
     }
 

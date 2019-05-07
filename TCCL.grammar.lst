@@ -1,10 +1,10 @@
 
 // ==========================================================================
-//  GPPG error listing for yacc source file <TCCL.grammar.y - 5/6/2019 12:41:15 PM>
+//  GPPG error listing for yacc source file <TCCL.grammar.y - 5/6/2019 6:24:46 PM>
 // ==========================================================================
 //  Version:  1.5.2
 //  Machine:  t-pc
-//  DateTime: 5/6/2019 12:41:45 PM
+//  DateTime: 5/6/2019 6:25:38 PM
 //  UserName: t
 // ==========================================================================
 
@@ -76,12 +76,19 @@ MethodBody                  :   Block                                           
 ClassDeclaration    :   Modifiers CLASS Identifier ClassBody 
                     ;
 
-Modifiers           :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC);}
+//Modifiers         :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC);}
                     |   PRIVATE                             { $$ = new Modifiers(ModifierType.PRIVATE);}
+//-----------------^^
+// Error: Syntax error, unexpected '|', expecting %%, or anchoredSymbol, or EOF
+// ----------------------------------------------------------------------------
                     |   STATIC                              { $$ = new Modifiers(ModifierType.STATIC);}
-                    /*|   Modifiers PUBLIC                    { $$ = new Identifier("Not Implemented: Modifier List");}*/
+//                  |   Modifiers PUBLIC                    { $$ = new Identifier("Not Implemented: Modifier List");}
+                    
+//                  |   Modifiers PUBLIC                    { $$ = new Modifiers(ModifierType.PUBLIC);}
+                    |   Modifiers PUBLIC                    { $$ = new Modifiers($1, ModifierType.PUBLIC);}
+                    
                     |   Modifiers PRIVATE                   { $$ = new Identifier("Not Implemented: Modifier List");}
-                    |   Modifiers STATIC                    { $$ = new Identifier("Not Implemented: Modifier List");}
+                    |   Modifiers STATIC                     { $$ = $1.adoptChildren($2);}
                     ;
 
 ClassBody           :   LBRACE FieldDeclarations RBRACE     
@@ -144,25 +151,18 @@ StaticInitializer           :   STATIC Block                                    
 Block                       :   LBRACE LocalItems RBRACE                            { $$ = new Block($2); }
                             |   LBRACE RBRACE                                       { $$ =  new Identifier("Not Implemented: Block"); }
                             ;
+                           
 
-/*LocalItems			        :   LocalItem						                    { $$ = new LocalItems($1); }              
-                            /*|   LocalItems LocalItem                            { $$ = new LocalItems($2); }*/
-                            |   LocalItems LocalItem                            { $$ = $1; }
-//-------------------------^^
-// Error: Syntax error, unexpected '|', expecting %%, or anchoredSymbol, or EOF
-// ----------------------------------------------------------------------------
-                            ;                              
-*/
-// Error: This character is invalid in this context
-// Error: This character is invalid in this context
-// ------------------------------------------------
-
-LocalItems                  :   LocalItem                                           { $$ = $1; }              
-                            |   LocalItems LocalItem                                { $$ = $1.adoptChildren($2); }
+//LocalItems                  :   LocalItem                                           { $$ = $1; }              
+LocalItems                  :   LocalItem                                           { $$ = new LocalItems($1); } 
+//                            |   LocalItems LocalItem                                { $$ = $1.adoptChildren($2); }
+                            |   LocalItems LocalItem                                { $$ = new LocalItems($1, $2); }
                             ;
                             
-LocalItem                     :   LocalVariableDeclaration							{ $$ = new LocalItem($1); }       
-                              |   Statement                                         { $$ = new Statement($1);}
+//LocalItem                     :   LocalVariableDeclaration							{ $$ = new LocalItem($1); }       
+LocalItem                     :   LocalVariableDeclaration                          { $$ = $1; }
+//                              |   Statement                                         { $$ = new Statement($1);}
+                                |   Statement                                         { $$ = $1 ;}
                               ;                                     
 
 LocalVariableDeclaration			:   TypeSpecifier LocalVariableNames SEMICOLON    { $$ = new LocalVariableDeclaration ($1, $2); }
@@ -175,7 +175,7 @@ LocalVariableNames          :   Identifier
 
                             
 Statement                   :   EmptyStatement                                              
-                            |   ExpressionStatement SEMICOLON                              
+                            |   ExpressionStatement SEMICOLON                      { $$ = new Statement($1);}        
                             |   SelectionStatement                                         
                             |   IterationStatement                                          
                             |   ReturnStatement                                            
@@ -185,7 +185,7 @@ Statement                   :   EmptyStatement
 EmptyStatement              :   SEMICOLON                                                   
                             ;
 
-ExpressionStatement         :   Expression                                                
+ExpressionStatement         :   Expression                                          {$$ = $1; }          
                             ;
 
 /*
@@ -194,7 +194,7 @@ ExpressionStatement         :   Expression
  *
  */
 
-SelectionStatement          :   IF LPAREN Expression RPAREN Statement ELSE Statement
+SelectionStatement          :   IF LPAREN Expression RPAREN Statement ELSE Statement        {$$ = new IFStatement($2,$5,$7);}
 //                          |   IF LPAREN Expression RPAREN Statement
                             ;
 
@@ -227,13 +227,13 @@ Expression                  :   QualifiedName EQUALS Expression     { $$ = new E
                             |   Expression PLUSOP Expression		{ $$ = new Expression($1, ExprKind.PLUSOP, $3); }
                             |   Expression MINUSOP Expression		{ $$ = new Expression($1, ExprKind.MINUSOP, $3); }
                             |   Expression ASTERISK Expression      { $$ = new Expression($1, ExprKind.ASTERISK, $3); }
-                            |   Expression RSLASH Expression        
-                            |   Expression PERCENT Expression   /* remainder */
+                            |   Expression RSLASH Expression        { $$ = new Expression($1, ExprKind.RSLASH, $3); }
+                            |   Expression PERCENT Expression   /* remainder */  { $$ = new Expression($1, ExprKind.PERCENT, $3); }
                             |   ArithmeticUnaryOperator Expression  %prec UNARY
                             |   PrimaryExpression               { $$ = $1; }
                             ;
 
-ArithmeticUnaryOperator     :   PLUSOP
+ArithmeticUnaryOperator     :   PLUSOP                                          
                             |   MINUSOP
                             ;
                             
@@ -257,9 +257,10 @@ ComplexPrimaryNoParenthesis :   LITERAL                         { $$ = $1;}
 
 FieldAccess                 :   NotJustName PERIOD Identifier   { $$ = new Identifier("Not Implemented: FieldAccess");}   
                             ;       
-
-MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN     { $$ =  new Identifier("Not Implemented: MethodCall"); }
-                            |   MethodReference LPAREN RPAREN                   { $$ = new Identifier("Not Implemented: MethodCall");}
+                            
+MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN      { $$ =  new MethodCall($1, $3); }
+//                          |   MethodReference LPAREN RPAREN                   { $$ = new Identifier("Not Implemented: MethodCall");}
+                            |   MethodReference LPAREN RPAREN                   { $$ = new MethodCall($1); }
                             ;
 
 MethodReference             :   ComplexPrimaryNoParenthesis     

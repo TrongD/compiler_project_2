@@ -91,7 +91,26 @@ namespace ASTBuilder
         {
             Console.Write("<" + node.ClassName() + ">: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
+
             Console.WriteLine(node.ModifierTokens[0]);
+
+
+            //int i = 0;
+            //foreach (var item in node.ModifierTokens)
+            //{
+            //    //Console.Write(i+"----");
+            //    Console.WriteLine(item);
+            //    i++;
+            //}
+
+            //Console.WriteLine(node.ModifierTokens[0]);
+
+            //if (node.count == 2){
+            //    Console.WriteLine(node.ModifierTokens[1]);
+            //}
+            //Console.WriteLine(node.ModifierTokens[0]);
+
+            
             Console.ResetColor();
         }
 

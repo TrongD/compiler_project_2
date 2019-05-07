@@ -12,4 +12,6 @@
         WriteLine(w);
         Write("value of big expression =");
         WriteLine(w*x+(12/w));
+        int k;
+        WriteLine();
     }

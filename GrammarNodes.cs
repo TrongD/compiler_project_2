@@ -26,6 +26,7 @@ namespace ASTBuilder
 
     public class Modifiers : AbstractNode
     {
+        public int count = 0;
         public List<ModifierType> ModifierTokens { get; set; } = new List<ModifierType>();
 
         public void AddModType(ModifierType type)
@@ -36,7 +37,15 @@ namespace ASTBuilder
         public Modifiers(ModifierType type) : base()
         {
             AddModType(type);
+            count++;
         }
+
+        //public Modifiers(AbstractNode modifier, ModifierType type) : base()
+        //{
+        //    adoptChildren(modifier);
+        //    AddModType(type);
+        //    count++;
+        //}
 
     }
     public class Identifier : AbstractNode
@@ -69,6 +78,15 @@ namespace ASTBuilder
         }
     }
 
+    //public class IFStatement : AbstractNode
+    //{
+    //    public IFStatement(AbstractNode LPR, AbstractNode statement, AbstractNode ELSE)
+    //    {
+    //        adoptChildren(LPR);
+    //        adoptChildren(statement);
+    //        adoptChildren(ELSE);
+    //    }
+    //}
 
     public class MethodDeclaration : AbstractNode
     {
@@ -224,8 +242,38 @@ namespace ASTBuilder
         {
             adoptChildren(methodReference);
         }
+
+        public MethodCall (AbstractNode methodReference, AbstractNode argumentsList)
+        {
+            adoptChildren(methodReference);
+            adoptChildren(argumentsList);
+        }
     }
 
+    public class ClassDeclaration : AbstractNode
+    {
+        public ClassDeclaration(AbstractNode classDeclaration)
+        {
+            adoptChildren(classDeclaration);
+        }
+
+        //public ClassDeclaration (AbstractNode classDeclaration, AbstractNode identifier, AbstractNode classBody)
+        //{
+        //    adoptChildren(classDeclaration);
+        //    adoptChildren(identifier);
+        //    adoptChildren(classBody);
+        //}
+    }
+
+    public class FieldVariableDeclaration : AbstractNode
+    {
+        public FieldVariableDeclaration (AbstractNode modifiers, AbstractNode typeSpecifier, AbstractNode fieldVariableDeclarators)
+        {
+            adoptChildren(modifiers);
+            adoptChildren(typeSpecifier);
+            adoptChildren(fieldVariableDeclarators);
+        }
+    }
 
     //public class Statement : AbstractNode
     //{

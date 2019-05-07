@@ -34,7 +34,8 @@
 
 %%
 
-CompilationUnit             :   ClassDeclaration                    {$$ = new Identifier("Not Implemented: ClassDeclaration");}
+//CompilationUnit             :   ClassDeclaration                    {$$ = new Identifier("Not Implemented: ClassDeclaration");}
+CompilationUnit             :   ClassDeclaration                    {$$ = new ClassDeclaration($1);}
                             |	MethodDeclarations                  {$$ = new CompilationUnit($1);} 
 					        ;
 
@@ -62,18 +63,28 @@ MethodBody                  :   Block                                           
 
 
 
-ClassDeclaration    :   Modifiers CLASS Identifier ClassBody 
+//ClassDeclaration    :   Modifiers CLASS Identifier ClassBody                    {$$ = new ClassDeclaration($1, $3, $4);}
+ClassDeclaration    :   Modifiers CLASS Identifier ClassBody                    
                     ;
 
 Modifiers           :   PUBLIC                              { $$ = new Modifiers(ModifierType.PUBLIC);}
+//Modifiers           :   PUBLIC                              { $$ = $1;}
                     |   PRIVATE                             { $$ = new Modifiers(ModifierType.PRIVATE);}
                     |   STATIC                              { $$ = new Modifiers(ModifierType.STATIC);}
-                    /*|   Modifiers PUBLIC                    { $$ = new Identifier("Not Implemented: Modifier List");}*/
-                    |   Modifiers PRIVATE                   { $$ = new Identifier("Not Implemented: Modifier List");}
-                    |   Modifiers STATIC                    { $$ = new Identifier("Not Implemented: Modifier List");}
+//                  |   Modifiers PUBLIC                    { $$ = new Identifier("Not Implemented: Modifier List");}
+                    
+//                  |   Modifiers PUBLIC                    { $$ = new Modifiers(ModifierType.PUBLIC);}
+                    |   Modifiers PUBLIC                    {$$ = $1.makeSibling(new Modifiers(ModifierType.PUBLIC)); $$ = $1;}          
+                    
+                    |   Modifiers PRIVATE                   {$$ = $1.makeSibling(new Modifiers(ModifierType.PRIVATE)); $$ = $1;}          
+//                    |   Modifiers STATIC                     { $$ = $1.adoptChildren($2);}
+
+                    |   Modifiers STATIC                     {$$ = $1.makeSibling(new Modifiers(ModifierType.STATIC)); $$ = $1;}          
+
+//                    |   Modifiers STATIC                     { $$ = new Modifiers($1, ModifierType.STATIC);}
                     ;
 
-ClassBody           :   LBRACE FieldDeclarations RBRACE     
+ClassBody           :   LBRACE FieldDeclarations RBRACE         
                     |   LBRACE RBRACE                       
                     ;
 
@@ -93,7 +104,7 @@ StructDeclaration   :   Modifiers STRUCT Identifier ClassBody   { $$ = new Ident
 
 
 
-FieldVariableDeclaration    :   Modifiers TypeSpecifier FieldVariableDeclarators            {}
+FieldVariableDeclaration    :   Modifiers TypeSpecifier FieldVariableDeclarators            {$$ = new FieldVariableDeclaration($1, $2, $3); }
                             ;
 
 TypeSpecifier               :   TypeName                                                    { $$ = $1; }
@@ -117,7 +128,7 @@ FieldVariableDeclarators    :   FieldVariableDeclaratorName                     
                             ;
 
 
-FieldVariableDeclaratorName :   Identifier                                                  {}
+FieldVariableDeclaratorName :   Identifier                                                  {$$ = $1;}
                             ;
 
 ConstructorDeclaration      :   Modifiers MethodSignature Block                             {}
@@ -176,7 +187,7 @@ ExpressionStatement         :   Expression                                      
  *
  */
 
-SelectionStatement          :   IF LPAREN Expression RPAREN Statement ELSE Statement
+SelectionStatement          :   IF LPAREN Expression RPAREN Statement ELSE Statement        
 //                          |   IF LPAREN Expression RPAREN Statement
                             ;
 
@@ -209,8 +220,8 @@ Expression                  :   QualifiedName EQUALS Expression     { $$ = new E
                             |   Expression PLUSOP Expression		{ $$ = new Expression($1, ExprKind.PLUSOP, $3); }
                             |   Expression MINUSOP Expression		{ $$ = new Expression($1, ExprKind.MINUSOP, $3); }
                             |   Expression ASTERISK Expression      { $$ = new Expression($1, ExprKind.ASTERISK, $3); }
-                            |   Expression RSLASH Expression        
-                            |   Expression PERCENT Expression   /* remainder */
+                            |   Expression RSLASH Expression        { $$ = new Expression($1, ExprKind.RSLASH, $3); }
+                            |   Expression PERCENT Expression   /* remainder */  { $$ = new Expression($1, ExprKind.PERCENT, $3); }
                             |   ArithmeticUnaryOperator Expression  %prec UNARY
                             |   PrimaryExpression               { $$ = $1; }
                             ;
@@ -239,10 +250,9 @@ ComplexPrimaryNoParenthesis :   LITERAL                         { $$ = $1;}
 
 FieldAccess                 :   NotJustName PERIOD Identifier   { $$ = new Identifier("Not Implemented: FieldAccess");}   
                             ;       
-
-//MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN     { $$ =  new Identifier("Not Implemented: MethodCall"); }
-MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN     { $$ =  new Identifier("Not Implemented: MethodCall"); }
-                            |   MethodReference LPAREN RPAREN                   { $$ = new Identifier("Not Implemented: MethodCall");}
+                            
+MethodCall                  :   MethodReference LPAREN ArgumentList RPAREN      { $$ =  new MethodCall($1, $3); }
+                            |   MethodReference LPAREN RPAREN                   { $$ = new MethodCall($1); }
                             ;
 
 MethodReference             :   ComplexPrimaryNoParenthesis     
